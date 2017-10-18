@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+
+<html ng-app="app">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>knock angular1 architecture</title>
+    <script src="js/jquery.2.2.4.js"></script>
+    <!--<script src="//cdn.bootcss.com/angular.js/1.4.3/angular.min.js"></script>-->
+    <script src="js/angular.1.4.14.js"></script>
+    <script src="js/angular.ui.route.1.4.14.js"></script>
+
+    <link href="js/bootstrap.3.3.6.js" rel="stylesheet">
+    <script src="js/bootstrap.3.3.6.js"></script>
+
+
+
+    <!--init 在所有angular模块的最后面-->
+    <script src="js/init.js" type="text/javascript"></script>
+
+    <!--app可以自定义angular模块-->
+    <script src="js/app.js"></script>
+</head>
+
+
+<body ng-controller="bodyController">
+<div>
+    <hr/>
+    <div class="header" ng-include="'pages/include1.html'">
+    </div>
+    <hr/>
+    templates:
+    <hr/>
+    <button ng-click="go()">click a</button>
+    <ul>
+        <li><a href="#/page2">click b</a></li>
+    </ul>
+    <ng-view></ng-view>
+
+
+    <hr/>
+    <hello></hello>
+
+
+    <hr/>
+</div>
+
+</body>
+<script type="text/javascript">
+var app = angular.module("app", ["ngRoute"]);
+app
+    .controller("bodyController", function($scope, $route) {
+          $scope.go = function() {
+              console.log($route)
+              window.location.href='/#/page1'
+          }
+    })
+    .controller("aController", function($scope, $route) {
+        $scope.hello = "hello, a!"
+    })
+    .controller("bController", function($scope) {
+        $scope.hello = "hello, b!"
+    })
+    .config(function($routeProvider, $locationProvider) {
+        $routeProvider.when('/page1', {
+            templateUrl: 'templates/a.html',
+            controller: 'aController'})
+            .when('/page2', {
+            templateUrl: 'templates/b.html',
+            controller: 'bController',
+//            resolve: {
+//            // I will cause a 3 second delay
+//                delay: function($q, $timeout) {
+//                    var delay = $q.defer();
+//                         $timeout(delay.resolve, 3000);
+//                            return delay.promise;
+//                    }
+//                 }
+                }).otherwise({
+                    redirectTo: '/page1'
+                });
+//        $locationProvider.html5Mode(true);
+})
+init.initApp(app);
+
+
+angular.module('app').controller('headerController', function($scope) {
+    $scope.header = 'this is header!!';
+});
+</script>
+</html>
